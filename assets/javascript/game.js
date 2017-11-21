@@ -5,16 +5,16 @@ var gameCountdown;
 var gameScore;
 
 function mainMenu() {
-	document.getElementById("gameBox").innerHTML = "";
+	$("#gameBox").html("");
 	var dHtml = "<h2>Select your game</h2>\n";
 	for (i = 0; i < quiz.length; i++) {
 		dHtml += "<button id='game" + i + "' class='btnGame' onclick='pickGame(" + i + ")'>" + quiz[i].n + "</button>\n";
 	}
-	document.getElementById("mainMenu").innerHTML = dHtml;
+	$("#mainMenu").html(dHtml);
 }
 
 function pickGame(id) {
-	document.getElementById("mainMenu").innerHTML = "";
+	$("#mainMenu").html("");
 	gameId = id;
 	startGame();
 }
@@ -27,21 +27,40 @@ function startGame() {
 
 function drawBox() {
 	gameCountdown = 10;
-	var dHtml = "<h2>" + quiz[gameId].n + "</h2>\n";
-	dHtml += "<div id='score'>Score: " + gameScore + "</div>\n";
-	dHtml += "<div id='timer'>Time left: " + gameCountdown + "</div>\n";
-	dHtml += "<img src='" + quiz[gameId].q[questionId].i + "' class=imgQuestion>\n";
-	dHtml += "<h3>" + quiz[gameId].q[questionId].q + "</h3>\n";
+	$("#gameBox").empty();
+	var eH2 = $("<h2>");
+	eH2.text(quiz[gameId].n.replace("&#39", "'"));
+	$("#gameBox").append(eH2);
+	var eScore = $("<div>");
+	eScore.attr("id", "score");
+	eScore.text("Score: " + gameScore);
+	$("#gameBox").append(eScore);
+	var eTimer = $("<div>");
+	eTimer.attr("id", "timer");
+	eTimer.text("Time left: " + gameCountdown);
+	$("#gameBox").append(eTimer);
+	var eImg = $("<img>");
+	eImg.attr("src", quiz[gameId].q[questionId].i);
+	eImg.attr("width", "500px");
+	eImg.attr("class", "imgQuestion>");
+	$("#gameBox").append(eImg);
+	var eQuestion = $("<h3>");
+	eQuestion.text(quiz[gameId].n.replace("&#39", "'"));
+	$("#gameBox").append(quiz[gameId].q[questionId].q.replace("&#39", "'"));
 	for (i = 0; i < quiz[gameId].q[questionId].a.length; i++) {
-		dHtml += "<button id='a" + i + "' class='btnAnswer' onclick='checkAnswer(" + i + ")'>" + quiz[gameId].q[questionId].a[i][0] + "</button>\n";
+		var eBtn = $("<button>");
+		eBtn.attr("id", "a" + i);
+		eBtn.attr("class", "btnAnswer");
+		eBtn.attr("onclick", "checkAnswer(" + i + ")");
+		eBtn.text(quiz[gameId].q[questionId].a[i][0].replace("&#39", "'"));
+		$("#gameBox").append(eBtn);
 	}
-	document.getElementById("gameBox").innerHTML = dHtml;
 	gameTimer = setInterval(drawTimer, 1000);
 }
 
 function drawTimer() {
 	gameCountdown--;
-	document.getElementById("timer").innerHTML = "Time left: " + gameCountdown;
+	$("#timer").html("Time left: " + gameCountdown);
 	if (!gameCountdown > 0) {
 		checkAnswer(-1);
 	}
@@ -49,29 +68,36 @@ function drawTimer() {
 
 function checkAnswer(a) {
 	clearInterval(gameTimer);
-	console.log(quiz[gameId].q[questionId].a.length);
 	for (i = 0; i < quiz[gameId].q[questionId].a.length; i++) {
 		if (quiz[gameId].q[questionId].a[i][1] === true) {
 			if (i === a) {
 				gameScore += gameCountdown;
 			} else {
-				document.getElementById("a" + i).className = "btnAnswerDis";
+				$("#a" + i).attr("class", "btnAnswerDis");
 			}
-			document.getElementById("a" + i).className = "btnCorrect";
+			$("#a" + i).attr("class", "btnCorrect");
 		} else {
 			if (i === a) {
-				document.getElementById("a" + i).className = "btnIncorrect";
+				$("#a" + i).attr("class", "btnIncorrect");
 			} else {
-				document.getElementById("a" + i).className = "btnAnswerDis";
+				$("#a" + i).attr("class", "btnAnswerDis");
 			}
 		}
-		document.getElementById("a" + i).disabled = true;
+		$("#a" + i).attr("disabled", "true");
 	}
 	questionId++;
 	if (questionId < quiz[gameId].q.length) {
-		document.getElementById("gameBox").innerHTML += "<button class='btnNext' onclick='drawBox()'>Next Question</button>\n";
+		var eBtn = $("<button>");
+		eBtn.attr("class", "btnNext");
+		eBtn.attr("onclick", "drawBox()");
+		eBtn.text("Next Question");
+		$("#gameBox").append(eBtn);
 	} else {
-		document.getElementById("gameBox").innerHTML += "<button class='btnEnd' onclick='mainMenu()'>New Game</button>\n";
+		var eBtn = $("<button>");
+		eBtn.attr("class", "btnEnd");
+		eBtn.attr("onclick", "mainMenu()");
+		eBtn.text("New Game");
+		$("#gameBox").append(eBtn);
 	}
-	document.getElementById("score").innerHTML = "Score: " + gameScore;
+	$("#score").html("Score: " + gameScore);
 }

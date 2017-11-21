@@ -22,7 +22,7 @@ document.write(outA);*/
 var quiz = [];
 
 quiz.push({
-	n: "Bob's Burgers",
+	n: "Bob&#39s Burgers",
 	q: [
 		{
 			q: 'When did Bob&#39s Burgers first air?',
